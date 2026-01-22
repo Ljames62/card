@@ -5,313 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow">
 
-  <title>Card</title>
-  
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding-top: 20px;
-      box-sizing: border-box;
-      background: radial-gradient(circle at center, #1a1a1a 0%, #665c5c 70%);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .scene {
-      width: min(90vw, 1100px);      
-      aspect-ratio: 7 / 5;
-      height: auto;
-      position: relative;
-    }
-
-    .scene.landscape {
-      width: min(90vw, 1100px);
-      aspect-ratio: 7 / 5;
-    }
-
-    .scene.portrait {
-      width: min(90vw, 562px);
-      aspect-ratio: 5 / 7;
-    }
-
-    .book {
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
-
-    .page {
-      position: absolute;
-      inset: 0;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #000;
-      box-shadow:
-        0 22px 60px rgba(0,0,0,0.65),
-        inset 0 0 0 1px rgba(255,255,255,0.08);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.6s ease;
-    }
-
-    .page img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      color: #ff0000;
-      text-align: center;
-    }
-
-    .show-front .front,
-    .show-inside-top .inside-top,
-    .show-inside-bot .inside-bot,
-    .show-back .back {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .open-controls {
-      position: relative;
-      margin-top: 20px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    .controls {
-      position: relative;
-      margin-top: 20px;      
-      width: 100%;
-      display: none; /* Initial state remains none until card opens */
-      justify-content: space-between; /* Pushes groups to the far left and right */
-      align-items: center;
-      flex-direction: column;
-    }
-
-    @media (min-width: 768px) {
-    .controls {
-      flex-direction: row;
-      }
-    }
-
-    .button-group {
-      display: flex;
-      margin-bottom: 20px;
-      gap: 14px;
-    }
-
-    button {
-      padding: 10px 22px;
-      font-size: 0.875rem; /* 14px */
-      border-radius: 999px;
-      border: none;
-      background: rgba(255,255,255,0.85);
-      color: #111;
-      cursor: pointer;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.75);
-      transition: background 0.25s ease, transform 0.15s ease;
-      white-space: nowrap;
-    }
-
-    button:hover {
-      background: rgba(255,255,255,1);
-      transform: translateY(-1px);
-    }
-  </style>
+  <title>Card</title>  
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/index.js" defer></script>
 </head>
 <body>
+  <audio id="ambientAudio" muted></audio>
 
-<audio id="ambientAudio" muted></audio>
+  <div class="scene landscape" id="scene">
+    <div class="book show-front" id="book">
 
-<div class="scene landscape" id="scene">
-  <div class="book show-front" id="book">
+      <div class="page front">
+        <img id="imgFront">
+      </div>
 
-    <div class="page front">
-      <img id="imgFront">
-    </div>
+      <div class="page inside-top">
+        <img id="imgInsideTop">
+      </div>
 
-    <div class="page inside-top">
-      <img id="imgInsideTop">
-    </div>
+      <div class="page inside-bot">
+        <img id="imgInsideBottom">
+      </div>
 
-    <div class="page inside-bot">
-      <img id="imgInsideBottom">
-    </div>
+      <div class="page back">
+        <img id="imgBack">
+      </div>
 
-    <div class="page back">
-      <img id="imgBack">
-    </div>
-
-    <div class="page error" id="errorPage">
-      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#eee;text-align:center;padding:40px;box-sizing:border-box;">
-        <div>
-          <h2 style="margin:0 0 12px;font-weight:600;">Card unavailable</h2>
-          <p style="margin:0;opacity:0.85;">This card could not be loaded.<br>Please check the link or files.</p>
+      <div class="page error" id="errorPage">
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#eee;text-align:center;padding:40px;box-sizing:border-box;">
+          <div>
+            <h2 style="margin:0 0 12px;font-weight:600;">Card unavailable</h2>
+            <p style="margin:0;opacity:0.85;">This card could not be loaded.<br>Please check the link or files.</p>
+          </div>
         </div>
       </div>
+
     </div>
 
-  </div>
-
-  <div class="open-controls" id="openControls">
-    <button onclick="openCard()">Open Card</button>
-  </div>
-
-  <div class="controls" id="navControls">
-    <div class="button-group">
-      <button id="prevBtn" onclick="prevPage()">◀ Prev</button>
-      <button id="nextBtn" onclick="nextPage()">Next ▶</button>
-      <button id="resetBtn" onclick="resetCard()">Reset</button>
+    <div class="open-controls" id="openControls">
+      <button onclick="openCard()">Open Card</button>
     </div>
 
-    <div class="button-group">
-      <button id="muteBtn" onclick="muteAudio()">Mute</button>
-      <button onclick="shareLink()">Share</button>      
+    <div class="controls" id="navControls">
+      <div class="button-group">
+        <button id="prevBtn" onclick="prevPage()">◀ Prev</button>
+        <button id="nextBtn" onclick="nextPage()">Next ▶</button>
+        <button id="resetBtn" onclick="resetCard()">Reset</button>
+      </div>
+
+      <div class="button-group">
+        <button id="muteBtn" onclick="muteAudio()">Mute</button>
+        <button onclick="shareLink()">Share</button>      
+      </div>
     </div>
   </div>
-</div>
-
-<script>
-  <!-- pageName can load config from windows file system without query string -->
-  const pageName = (() => { let p = location.pathname.split('/').pop(); return p ? p.replace(/\.[^/.]+$/, '') : 'index'; })();
-  const book = document.getElementById('book');
-  const audio = document.getElementById('ambientAudio');
-  
-  let page = 0;
-  
-  <!-- Config loaded dynamically based on query string -->
-  <!-- Load config without fetch (works from file://) -->
-  const params = new URLSearchParams(window.location.search);
-  const configName = params.get('cfg') || pageName;
-  const debug = params.has('debug');
-
-  function loadConfig(name) {
-    const script = document.createElement('script');
-    script.src = `${name}.config.js`;
-    script.onload = () => {
-      if (window.CARD_CONFIG) {
-        initCard(window.CARD_CONFIG);
-        if (debug) showDebug(`Loaded config: ${name}.config.js`);
-      } else {
-        fallback(`Config loaded but CARD_CONFIG missing`);
-      }
-    };
-    script.onerror = () => fallback(`Failed to load ${name}.config.js`);
-    document.head.appendChild(script);
-  }
-
-  function fallback(reason) {
-    if (debug) showDebug(`Fallback activated: ${reason}`);
-    document.getElementById('errorPage').style.opacity = '1';
-    document.getElementById('errorPage').style.visibility = 'visible';
-    document.getElementById('openControls').style.display = 'none';
-    book.className = 'book';
-  }
-
-  function showDebug(msg) {
-    let box = document.getElementById('debugBox');
-    if (!box) {
-      box = document.createElement('div');
-      box.id = 'debugBox';
-      box.style.position = 'fixed';
-      box.style.bottom = '10px';
-      box.style.left = '10px';
-      box.style.padding = '8px 12px';
-      box.style.background = 'rgba(0,0,0,0.7)';
-      box.style.color = '#0f0';
-      box.style.fontSize = '12px';
-      box.style.borderRadius = '6px';
-      box.style.zIndex = '9999';
-      document.body.appendChild(box);
-    }
-    box.textContent = msg;
-  }
-
-  loadConfig(configName);
-
-  function initCard(config) {
-    // set scene orientation, default to landscape(horizontal)
-    const scene = document.getElementById('scene');
-    const orient = (config.orientation || 'landscape').toLowerCase();
-    
-    scene.classList.remove('portrait', 'landscape'); //remove default value
-    scene.classList.add(orient === 'portrait' ? 'portrait' : 'landscape');
-
-    // assign images
-    document.getElementById('imgFront').src = config.images.front;
-    document.getElementById('imgInsideTop').src = config.images.insideTop;
-    document.getElementById('imgInsideBottom').src = config.images.insideBottom;
-    document.getElementById('imgBack').src = config.images.back;
-
-    // preload images
-    Object.values(config.images).forEach(src => {
-      const img = new Image();
-      img.src = src;
-      img.alt = 'Image source is unavailable. Please use Cntrl+F5 to refresh the page and try again.';
-    });
-
-    // audio
-    audio.src = config.audio;
-    audio.muted = false;
-  }
-
-  function updateState() {
-    book.className = 'book';
-    if (page === 0) book.classList.add('show-front');
-    if (page === 1) book.classList.add('show-inside-top');
-    if (page === 2) book.classList.add('show-inside-bot');
-    if (page === 3) book.classList.add('show-back');
-
-    prevBtn.style.visibility = page === 0 ? 'hidden' : 'visible';
-    nextBtn.style.display = page === 3 ? 'none' : 'inline';
-    resetBtn.style.display = page === 3 ? 'inline' : 'none';
-  }
-
-  function openCard() {
-    openControls.style.display = 'none';
-    navControls.style.display = 'flex';
-    audio.muted = false;
-    audio.volume = 0.35;
-    audio.play().catch(() => {});
-    updateState();
-  }
-
-  function nextPage() {
-    if (page < 3) page++;
-    updateState();
-  }
-
-  function prevPage() {
-    if (page > 0) page--;
-    updateState();
-  }
-
-  function muteAudio() {
-    audio.muted = !audio.muted;  // toggle mute
-    muteBtn.textContent = audio.muted ? 'Unmute' : 'Mute';
-  }
-
-  function shareLink() {
-    const url = window.location.href;
-    if (navigator.share) {
-      navigator.share({ title: document.title, url });
-    } else {
-      navigator.clipboard.writeText(url).then(() => {
-        alert('Link copied to clipboard');
-      });
-    }
-  }
-
-  function resetCard() {
-    page = 0;
-    updateState();
-  }
-</script>
-
 </body>
 </html>
