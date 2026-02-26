@@ -1,15 +1,24 @@
 // pageName can load config from windows file system without query string
 const pageName = (() => { let p = location.pathname.split('/').pop(); return p ? p.replace(/\.[^/.]+$/, '') : 'index'; })();
-const book = document.getElementById('book');
-const audio = document.getElementById('ambientAudio');
-  
-let page = 0;
   
 // Config loaded dynamically based on query string
 // Load config without fetch (works from file://)
 const params = new URLSearchParams(window.location.search);
 const configName = params.get('cfg') || pageName;
+const totalPages = parseInt(params.get('pg')) || 4;
 const debug = params.has('debug');
+
+const book = document.getElementById('book');
+const audio = document.getElementById('ambientAudio');
+const prevBtn = document.getElementById('prevBtn')
+const nextBtn = document.getElementById('nextBtn');
+const resetBtn = document.getElementById('resetBtn');
+const muteBtn = document.getElementById('muteBtn');
+const openControls = document.getElementById('openControls');
+const navControls = document.getElementById('navControls');
+const errorPage = document.getElementById('errorPage');
+
+let page = 0;
 
 function loadConfig(name) {
   const script = document.createElement('script');
@@ -28,9 +37,9 @@ function loadConfig(name) {
 
 function fallback(reason) {
   if (debug) showDebug(`Fallback activated: ${reason}`);
-  document.getElementById('errorPage').style.opacity = '1';
-  document.getElementById('errorPage').style.visibility = 'visible';
-  document.getElementById('openControls').style.display = 'none';
+  errorPage.style.opacity = '1';
+  errorPage.style.visibility = 'visible';
+  openControls.style.display = 'none';
   book.className = 'book';
 }
 
@@ -53,28 +62,33 @@ function showDebug(msg) {
   box.textContent = msg;
 }
 
-loadConfig(configName);
-
 function initCard(config) {
   // set scene orientation, default to landscape(horizontal)
   const scene = document.getElementById('scene');
-  const orient = (config.orientation || 'landscape').toLowerCase();
+  scene.className = `scene ${config.orientation || 'landscape'}`;
 
-  scene.classList.remove('portrait', 'landscape'); //remove default value
-  scene.classList.add(orient === 'portrait' ? 'portrait' : 'landscape');
+  book.innerHTML = '';
 
-  // assign images
-  document.getElementById('imgFront').src = config.images.front;
-  document.getElementById('imgInsideTop').src = config.images.insideTop;
-  document.getElementById('imgInsideBottom').src = config.images.insideBottom;
-  document.getElementById('imgBack').src = config.images.back;
+  for (let i = 0; i < totalPages; i++) {
+    const pageWrapper = document.createElement('div');
+    pageWrapper.className = 'page-wrapper'; // This gets the shadow
+    pageWrapper.style.zIndex = totalPages - i;
 
-  // preload images
-  Object.values(config.images).forEach(src => {
-    const img = new Image();
-    img.src = src;
-    img.alt = 'Image source is unavailable. Please use Cntrl+F5 to refresh the page and try again.';
-  });
+    const pageDiv = document.createElement('div');
+    pageDiv.className = `page page-${i}`;
+    pageDiv.style.zIndex = totalPages - i;
+        
+    const img = document.createElement('img');
+
+
+
+    img.src = config.images[i];
+        
+    pageDiv.appendChild(img);
+    pageWrapper.appendChild(pageDiv);
+    book.appendChild(pageWrapper);
+    openControls.style.display = 'flex';
+  }
 
   // audio
   audio.src = config.audio;
@@ -83,10 +97,12 @@ function initCard(config) {
 
 function updateState() {
   book.className = 'book';
-  if (page === 0) book.classList.add('show-front');
-  if (page === 1) book.classList.add('show-inside-top');
-  if (page === 2) book.classList.add('show-inside-bot');
-  if (page === 3) book.classList.add('show-back');
+
+  const allPages = document.querySelectorAll('.page');
+  allPages.forEach((p, idx) => {
+    p.style.opacity = (idx === page) ? '1' : '0';
+    p.style.visibility = (idx === page) ? 'visible' : 'hidden';
+  });
 
   prevBtn.style.visibility = page === 0 ? 'hidden' : 'visible';
   nextBtn.style.display = page === 3 ? 'none' : 'inline';
@@ -102,13 +118,18 @@ function openCard() {
   updateState();
 }
 
+function prevPage() {
+  if (page > 0) page--;
+  updateState();
+}
+
 function nextPage() {
   if (page < 3) page++;
   updateState();
 }
 
-function prevPage() {
-  if (page > 0) page--;
+function resetCard() {
+  page = 0;
   updateState();
 }
 
@@ -128,7 +149,4 @@ function shareLink() {
   }
 }
 
-function resetCard() {
-  page = 0;
-  updateState();
-}
+loadConfig(configName);
