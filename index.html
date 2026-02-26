@@ -13,24 +13,8 @@
   <audio id="ambientAudio" muted></audio>
 
   <div class="scene landscape" id="scene">
-    <div class="book show-front" id="book">
-
-      <div class="page front">
-        <img id="imgFront">
-      </div>
-
-      <div class="page inside-top">
-        <img id="imgInsideTop">
-      </div>
-
-      <div class="page inside-bot">
-        <img id="imgInsideBottom">
-      </div>
-
-      <div class="page back">
-        <img id="imgBack">
-      </div>
-
+    <div class="book" id="book">
+      <!-- pages injected here -->
       <div class="page error" id="errorPage">
         <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#eee;text-align:center;padding:40px;box-sizing:border-box;">
           <div>
@@ -39,7 +23,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <div class="open-controls" id="openControls">
@@ -58,6 +41,6 @@
         <button onclick="shareLink()">Share</button>      
       </div>
     </div>
-  </div>
+  </div>  
 </body>
 </html>
