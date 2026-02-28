@@ -5,7 +5,6 @@ const pageName = (() => { let p = location.pathname.split('/').pop(); return p ?
 // Load config without fetch (works from file://)
 const params = new URLSearchParams(window.location.search);
 const configName = params.get('cfg') || pageName;
-const totalPages = parseInt(params.get('pg')) || 4;
 const debug = params.has('debug');
 
 const book = document.getElementById('book');
@@ -19,6 +18,7 @@ const navControls = document.getElementById('navControls');
 const errorPage = document.getElementById('errorPage');
 
 let page = 0;
+let pages = 4;
 
 function loadConfig(name) {
   const script = document.createElement('script');
@@ -67,16 +67,19 @@ function initCard(config) {
   const scene = document.getElementById('scene');
   scene.className = `scene ${config.orientation || 'landscape'}`;
 
+  // pages
+  pages = config.images.length;
+
   book.innerHTML = '';
 
-  for (let i = 0; i < totalPages; i++) {
+  for (let i = 0; i < pages; i++) {
     const pageWrapper = document.createElement('div');
     pageWrapper.className = 'page-wrapper'; // This gets the shadow
-    pageWrapper.style.zIndex = totalPages - i;
+    pageWrapper.style.zIndex = pages - i;
 
     const pageDiv = document.createElement('div');
     pageDiv.className = `page page-${i}`;
-    pageDiv.style.zIndex = totalPages - i;
+    pageDiv.style.zIndex = pages- i;
         
     const img = document.createElement('img');
 
@@ -105,8 +108,8 @@ function updateState() {
   });
 
   prevBtn.style.visibility = page === 0 ? 'hidden' : 'visible';
-  nextBtn.style.display = page === 3 ? 'none' : 'inline';
-  resetBtn.style.display = page === 3 ? 'inline' : 'none';
+  nextBtn.style.display = page === pages - 1 ? 'none' : 'inline';
+  resetBtn.style.display = page === pages - 1 ? 'inline' : 'none';
 }
 
 function openCard() {
@@ -124,7 +127,7 @@ function prevPage() {
 }
 
 function nextPage() {
-  if (page < 3) page++;
+  if (page < pages - 1) page++;
   updateState();
 }
 
