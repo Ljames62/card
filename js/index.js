@@ -12,6 +12,8 @@ const audio = document.getElementById('ambientAudio');
 const prevBtn = document.getElementById('prevBtn')
 const nextBtn = document.getElementById('nextBtn');
 const resetBtn = document.getElementById('resetBtn');
+const autoBtn = document.getElementById('autoBtn');
+const autoTime = document.getElementById('autoTime');
 const muteBtn = document.getElementById('muteBtn');
 const openControls = document.getElementById('openControls');
 const navControls = document.getElementById('navControls');
@@ -19,6 +21,7 @@ const errorPage = document.getElementById('errorPage');
 
 let page = 0;
 let pages = 4;
+let autoTimer = null;
 
 function loadConfig(name) {
   const script = document.createElement('script');
@@ -73,23 +76,15 @@ function initCard(config) {
   book.innerHTML = '';
 
   for (let i = 0; i < pages; i++) {
-    const pageWrapper = document.createElement('div');
-    pageWrapper.className = 'page-wrapper'; // This gets the shadow
-    pageWrapper.style.zIndex = pages - i;
-
     const pageDiv = document.createElement('div');
     pageDiv.className = `page page-${i}`;
     pageDiv.style.zIndex = pages- i;
         
     const img = document.createElement('img');
-
-
-
     img.src = config.images[i];
         
     pageDiv.appendChild(img);
-    pageWrapper.appendChild(pageDiv);
-    book.appendChild(pageWrapper);
+    book.appendChild(pageDiv);
     openControls.style.display = 'flex';
   }
 
@@ -99,8 +94,6 @@ function initCard(config) {
 }
 
 function updateState() {
-  book.className = 'book';
-
   const allPages = document.querySelectorAll('.page');
   allPages.forEach((p, idx) => {
     p.style.opacity = (idx === page) ? '1' : '0';
@@ -108,32 +101,92 @@ function updateState() {
   });
 
   prevBtn.style.visibility = page === 0 ? 'hidden' : 'visible';
-  nextBtn.style.display = page === pages - 1 ? 'none' : 'inline';
-  resetBtn.style.display = page === pages - 1 ? 'inline' : 'none';
+  nextBtn.style.visibility = page === 0 ? 'hidden' : 'visible';
+  resetBtn.style.visibility = page === 0 ? 'hidden' : 'visible';
+  autoBtn.style.display = page === pages - 1 ? 'none' : 'inline';
+  autoTime.style.display = page === pages - 1 ? 'none' : 'inline';
 }
 
 function openCard() {
   openControls.style.display = 'none';
   navControls.style.display = 'flex';
   audio.muted = false;
+  audio.loop = true;
   audio.volume = 0.35;
   audio.play().catch(() => {});
-  updateState();
-}
-
-function prevPage() {
-  if (page > 0) page--;
-  updateState();
-}
-
-function nextPage() {
   if (page < pages - 1) page++;
   updateState();
 }
 
+function prevPage() {
+  if (page === 1) {
+    resetCard();
+  } else if (page > 1) {
+    page--;
+    updateState();
+
+    if (autoTimer) {
+      stopAuto();
+      toggleAuto();
+    }
+  }
+}
+
+function nextPage() {
+  if (page < pages - 1) {
+    page++;
+    updateState();
+
+    if (autoTimer) {
+      stopAuto();
+      toggleAuto();
+    }
+  }
+}
+
 function resetCard() {
+  stopAuto();
   page = 0;
+  openControls.style.display = 'flex';
+  navControls.style.display = 'none';
+  audio.pause();
+  audio.currentTime = 0;
   updateState();
+}
+
+function toggleAuto() {
+  const interval = parseInt(document.getElementById('autoTime').value);
+
+  if (autoTimer) {
+    stopAuto();
+  } else {
+    autoBtn.textContent = 'Stop';
+    autoBtn.style.background = '#ff4444';
+    autoBtn.style.color = '#fff';
+
+    autoTimer = setInterval(() => {
+      if (page < pages - 1) {
+        nextPage();
+      } else {
+        stopAuto(); // Stop once we hit the last page
+      }
+    }, interval);
+  }
+}
+
+function stopAuto() {
+  clearInterval(autoTimer);
+  autoTimer = null;
+  autoBtn.textContent = 'Auto';
+  autoBtn.style.background = 'rgba(255,255,255,0.85)';
+  autoBtn.style.color = '#111';
+}
+
+function updateAutoInterval() {
+  if (autoTimer) {
+    stopAuto();
+    toggleAuto();
+  }
 }
 
 function muteAudio() {
