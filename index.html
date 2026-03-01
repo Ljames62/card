@@ -34,6 +34,20 @@
         <button id="prevBtn" onclick="prevPage()">◀ Prev</button>
         <button id="nextBtn" onclick="nextPage()">Next ▶</button>
         <button id="resetBtn" onclick="resetCard()">Reset</button>
+        
+        <button id="autoBtn" onclick="toggleAuto()">Auto</button>
+        <select id="autoTime" onchange="updateAutoInterval()">
+          <option value="2000">2s</option>
+          <option value="4000" selected>4s</option>
+          <option value="6000">6s</option>
+          <option value="8000">8s</option>
+          <option value="10000">10s</option>
+          <option value="12000">12s</option>
+          <option value="14000">14s</option>
+          <option value="16000">16s</option>
+          <option value="18000">18s</option>
+          <option value="20000">20s</option>
+        </select>
       </div>
 
       <div class="button-group">
