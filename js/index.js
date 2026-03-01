@@ -25,7 +25,8 @@ let autoTimer = null;
 
 function loadConfig(name) {
   const script = document.createElement('script');
-  script.src = `js/${name}.config.js`;
+  script.src = `js/${name}.config.js?v=1.0.0`;
+
   script.onload = () => {
     if (window.CARD_CONFIG) {
       initCard(window.CARD_CONFIG);
@@ -34,6 +35,7 @@ function loadConfig(name) {
       fallback(`Config loaded but CARD_CONFIG missing`);
     }
   };
+
   script.onerror = () => fallback(`Failed to load ${name}.config.js`);
   document.head.appendChild(script);
 }
