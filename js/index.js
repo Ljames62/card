@@ -118,6 +118,7 @@ function openCard() {
   audio.play().catch(() => {});
   if (page < pages - 1) page++;
   updateState();
+  toggleAuto();
 }
 
 function prevPage() {
