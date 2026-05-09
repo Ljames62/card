@@ -4,6 +4,7 @@ Load card config via query string
 Example: https://ljames62.github.io/card/index.html?cfg=ann27  
 Example: https://ljames62.github.io/card/index.html?cfg=val26  
 Example: https://ljames62.github.io/card/index.html?cfg=bir25  
+Example: https://ljames62.github.io/card/index.html?cfg=mday26  
 
 Load card with page name  
 Example: https://ljames62.github.io/card/index.html
