@@ -19,3 +19,5 @@ Example: https://ljames62.github.io/card
 
 Load card with debug info  
 Example: https://ljames62.github.io/card/index.html?cfg=index&debug
+
+yt-dlp -x --audio-format mp3 "YOUR_YOUTUBE_URL_HERE"  
