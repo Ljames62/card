@@ -93,6 +93,11 @@ function initCard(config) {
   // audio
   audio.src = config.audio;
   audio.muted = false;
+
+  // page interval
+  if (autoTime && config.autoTimeSelected) {
+    autoTime.value = config.autoTimeSelected;
+  }
 }
 
 function updateState() {
@@ -158,7 +163,7 @@ function resetCard() {
 }
 
 function toggleAuto() {
-  const interval = parseInt(document.getElementById('autoTime').value);
+  const interval = parseInt(autoTime.value);
 
   if (autoTimer) {
     stopAuto();
