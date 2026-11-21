@@ -32,8 +32,7 @@
     <div class="controls" id="navControls">
       <div class="button-group">
         <button id="prevBtn" onclick="prevPage()">◀ Prev</button>
-        <button id="nextBtn" onclick="nextPage()">Next ▶</button>
-        <button id="resetBtn" onclick="resetCard()">Reset</button>
+        <button id="nextBtn" onclick="nextPage()">Next ▶</button>        
         
         <button id="autoBtn" onclick="toggleAuto()">Auto</button>
         <select id="autoTime" onchange="updateAutoInterval()">
@@ -53,6 +52,7 @@
       </div>
 
       <div class="button-group">
+        <button id="resetBtn" onclick="resetCard()">Reset</button>
         <button id="muteBtn" onclick="muteAudio()">Mute</button>
         <button onclick="shareLink()">Share</button>      
       </div>
