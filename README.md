@@ -6,6 +6,7 @@ Example: https://ljames62.github.io/card/index.html?cfg=val26
 Example: https://ljames62.github.io/card/index.html?cfg=bir25  
 Example: https://ljames62.github.io/card/index.html?cfg=mday26  
 Example: https://ljames62.github.io/card/index.html?cfg=ned25  
+Example: https://ljames62.github.io/card/index.html?cfg=gin68  
 
 
 Load card with page name  
