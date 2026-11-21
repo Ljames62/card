@@ -168,9 +168,7 @@ function toggleAuto() {
   if (autoTimer) {
     stopAuto();
   } else {
-    autoBtn.textContent = 'Stop';
-    autoBtn.style.background = '#ff4444';
-    autoBtn.style.color = '#fff';
+    autoBtn.textContent = 'Pause';
 
     autoTimer = setInterval(() => {
       if (page < pages - 1) {
@@ -185,9 +183,7 @@ function toggleAuto() {
 function stopAuto() {
   clearInterval(autoTimer);
   autoTimer = null;
-  autoBtn.textContent = 'Auto';
-  autoBtn.style.background = 'rgba(255,255,255,0.85)';
-  autoBtn.style.color = '#111';
+  autoBtn.textContent = 'Resume';
 }
 
 function updateAutoInterval() {
